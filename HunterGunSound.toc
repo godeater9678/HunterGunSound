@@ -7,6 +7,12 @@
 ## Version: 1.0.0
 ## Notes: Enhanced Hunter addon with custom gun sounds, volume control, pet-based Kill Command sounds, and kill streak announcements! Use /hgs for settings
 ## Notes-koKR: |cFFFFDF00볼륨 조절 & 펫 기반 Kill Command 소리로 향상된 애드온! |cFF003FFF/hgs|cFFFFDF00 명령어로 설정 가능
+## Notes-frFR: Addon Chasseur amélioré avec sons d'armes personnalisés, contrôle du volume et annonces de séries d'éliminations! Utilisez /hgs pour les paramètres
+## Notes-deDE: Verbessertes Jäger-Addon mit benutzerdefinierten Waffensounds, Lautstärkeregelung und Kill-Streak-Ansagen! Verwende /hgs für Einstellungen
+## Notes-esES: ¡Addon de Cazador mejorado con sonidos de armas personalizados, control de volumen y anuncios de rachas de muerte! Usa /hgs para configuración
+## Notes-zhCN: 增强版猎人插件，包含自定义武器音效、音量控制和连杀播报！使用 /hgs 进行设置
+## Notes-zhTW: 增強版獵人插件，包含自訂武器音效、音量控制和連殺播報！使用 /hgs 進行設定
+## Notes-ruRU: Улучшенный аддон Охотника с пользовательскими звуками оружия, контролем громкости и объявлениями серий убийств! Используйте /hgs для настроек
 ## X-Category: Hunter
 ## X-Website: https://github.com/godeater9678/HunterGunSound
 #
