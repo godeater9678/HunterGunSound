@@ -373,7 +373,7 @@ HunterGunSound:RegisterEvent("UNIT_SPELLCAST_START")
 HunterGunSound:SetScript("OnEvent", onEvent)
 HunterGunSound:SetScript("OnUpdate", onUp)
 
--- Enhanced Localization System
+-- Localization System (Korean & English)
 local L = {}
 local locale = GetLocale()
 
@@ -400,152 +400,8 @@ if locale == "koKR" then
     L.LoadedMessage = "|cFFFFDF00HunterGunSound 로드됨! 제작: |cFFFF69B4-낭만냥꾼-|r"
     L.CommandMessage = "|cFFFFDF00|cFF003FFF/hgs|cFFFFDF00 명령어로 설정 창을 열거나 |cFF003FFF/ogs|cFFFFDF00 명령어로 사운드를 켜고 끌 수 있습니다.|r"
     L.Credits = "개선: |cFFFF69B4-낭만냥꾼-|r"
-    
--- French (Français)
-elseif locale == "frFR" then
-    L.Title = "HunterGunSound Paramètres - |cFFFF69B4Chasseur Romantique|r Edition"
-    L.CheckboxText = "Activer les Sons Alternatifs"
-    L.EchoCheckboxText = "Effet d'Écho"
-    L.PetSoundCheckboxText = "Remplacement Sons de Familier"
-    L.PetSoundCat = "Son de Chat"
-    L.PetSoundBird = "Son d'Oiseau"
-    L.VolumeSettings = "Paramètres de Volume"
-    L.VolumeQuiet = "Silencieux"
-    L.VolumeNormal = "Normal"
-    L.VolumeLoud = "Fort"
-    L.OnText = "|cFFFFDF00Sons de Chasseur ACTIVÉS|r"
-    L.OffText = "|cFFFFDF00Sons de Chasseur DÉSACTIVÉS|r"
-    L.EchoOnText = "|cFFFFDF00Effet d'écho activé|r"
-    L.EchoOffText = "|cFFFFDF00Effet d'écho désactivé|r"
-    L.PetSoundOnText = "|cFFFFDF00Remplacement sons de familier activé|r"
-    L.PetSoundOffText = "|cFFFFDF00Remplacement sons de familier désactivé|r"
-    L.PetSoundChanged = "|cFFFFDF00Son de familier défini sur |cFF00FF00%s|r"
-    L.VolumeChanged = "|cFFFFDF00Volume défini sur |cFF00FF00%s|r"
-    L.LoadedMessage = "|cFFFFDF00HunterGunSound chargé! Modifié par |cFFFF69B4-Chasseur Romantique-|r"
-    L.CommandMessage = "|cFFFFDF00Tapez |cFF003FFF/hgs|cFFFFDF00 pour ouvrir les paramètres ou |cFF003FFF/ogs|cFFFFDF00 pour basculer les sons|r"
-    L.Credits = "Modifié par |cFFFF69B4-Chasseur Romantique-|r"
-    
--- German (Deutsch)
-elseif locale == "deDE" then
-    L.Title = "HunterGunSound Einstellungen - |cFFFF69B4Romantischer Jäger|r Edition"
-    L.CheckboxText = "Alternative Sounds Aktivieren"
-    L.EchoCheckboxText = "Echo-Effekt"
-    L.PetSoundCheckboxText = "Begleiter-Sound Ersetzung"
-    L.PetSoundCat = "Katzen-Sound"
-    L.PetSoundBird = "Vogel-Sound"
-    L.VolumeSettings = "Lautstärke-Einstellungen"
-    L.VolumeQuiet = "Leise"
-    L.VolumeNormal = "Normal"
-    L.VolumeLoud = "Laut"
-    L.OnText = "|cFFFFDF00Jäger-Sounds sind AN|r"
-    L.OffText = "|cFFFFDF00Jäger-Sounds sind AUS|r"
-    L.EchoOnText = "|cFFFFDF00Echo-Effekt aktiviert|r"
-    L.EchoOffText = "|cFFFFDF00Echo-Effekt deaktiviert|r"
-    L.PetSoundOnText = "|cFFFFDF00Begleiter-Sound Ersetzung aktiviert|r"
-    L.PetSoundOffText = "|cFFFFDF00Begleiter-Sound Ersetzung deaktiviert|r"
-    L.PetSoundChanged = "|cFFFFDF00Begleiter-Sound auf |cFF00FF00%s|r gesetzt"
-    L.VolumeChanged = "|cFFFFDF00Lautstärke auf |cFF00FF00%s|r gesetzt"
-    L.LoadedMessage = "|cFFFFDF00HunterGunSound geladen! Modifiziert von |cFFFF69B4-Romantischer Jäger-|r"
-    L.CommandMessage = "|cFFFFDF00|cFF003FFF/hgs|cFFFFDF00 für Einstellungen oder |cFF003FFF/ogs|cFFFFDF00 zum An-/Ausschalten|r"
-    L.Credits = "Modifiziert von |cFFFF69B4-Romantischer Jäger-|r"
-    
--- Spanish (Español)
-elseif locale == "esES" or locale == "esMX" then
-    L.Title = "HunterGunSound Configuración - |cFFFF69B4Cazador Romántico|r Edition"
-    L.CheckboxText = "Activar Sonidos Alternativos"
-    L.EchoCheckboxText = "Efecto de Eco"
-    L.PetSoundCheckboxText = "Reemplazo de Sonidos de Mascotas"
-    L.PetSoundCat = "Sonido de Gato"
-    L.PetSoundBird = "Sonido de Pájaro"
-    L.VolumeSettings = "Configuración de Volumen"
-    L.VolumeQuiet = "Silencioso"
-    L.VolumeNormal = "Normal"
-    L.VolumeLoud = "Alto"
-    L.OnText = "|cFFFFDF00Sonidos de Cazador ACTIVADOS|r"
-    L.OffText = "|cFFFFDF00Sonidos de Cazador DESACTIVADOS|r"
-    L.EchoOnText = "|cFFFFDF00Efecto de eco activado|r"
-    L.EchoOffText = "|cFFFFDF00Efecto de eco desactivado|r"
-    L.PetSoundOnText = "|cFFFFDF00Reemplazo de sonidos de mascotas activado|r"
-    L.PetSoundOffText = "|cFFFFDF00Reemplazo de sonidos de mascotas desactivado|r"
-    L.PetSoundChanged = "|cFFFFDF00Sonido de mascota establecido en |cFF00FF00%s|r"
-    L.VolumeChanged = "|cFFFFDF00Volumen establecido en |cFF00FF00%s|r"
-    L.LoadedMessage = "|cFFFFDF00¡HunterGunSound cargado! Modificado por |cFFFF69B4-Cazador Romántico-|r"
-    L.CommandMessage = "|cFFFFDF00Escribe |cFF003FFF/hgs|cFFFFDF00 para configuración o |cFF003FFF/ogs|cFFFFDF00 para alternar sonidos|r"
-    L.Credits = "Modificado por |cFFFF69B4-Cazador Romántico-|r"
-    
--- Chinese Simplified (简体中文)
-elseif locale == "zhCN" then
-    L.Title = "HunterGunSound 设置 - |cFFFF69B4浪漫猎手|r 版"
-    L.CheckboxText = "启用替代音效"
-    L.EchoCheckboxText = "回声效果"
-    L.PetSoundCheckboxText = "宠物音效替换"
-    L.PetSoundCat = "猫咪音效"
-    L.PetSoundBird = "鸟类音效"
-    L.VolumeSettings = "音量设置"
-    L.VolumeQuiet = "安静"
-    L.VolumeNormal = "普通"
-    L.VolumeLoud = "响亮"
-    L.OnText = "|cFFFFDF00猎人枪声音效已开启|r"
-    L.OffText = "|cFFFFDF00猎人枪声音效已关闭|r"
-    L.EchoOnText = "|cFFFFDF00回声效果已启用|r"
-    L.EchoOffText = "|cFFFFDF00回声效果已禁用|r"
-    L.PetSoundOnText = "|cFFFFDF00宠物音效替换已启用|r"
-    L.PetSoundOffText = "|cFFFFDF00宠物音效替换已禁用|r"
-    L.PetSoundChanged = "|cFFFFDF00宠物音效设置为 |cFF00FF00%s|r"
-    L.VolumeChanged = "|cFFFFDF00音量设置为 |cFF00FF00%s|r"
-    L.LoadedMessage = "|cFFFFDF00HunterGunSound 已加载！修改者：|cFFFF69B4-浪漫猎手-|r"
-    L.CommandMessage = "|cFFFFDF00输入 |cFF003FFF/hgs|cFFFFDF00 打开设置或 |cFF003FFF/ogs|cFFFFDF00 切换音效|r"
-    L.Credits = "修改者：|cFFFF69B4-浪漫猎手-|r"
-    
--- Chinese Traditional (繁體中文)
-elseif locale == "zhTW" then
-    L.Title = "HunterGunSound 設定 - |cFFFF69B4浪漫獵手|r 版"
-    L.CheckboxText = "啟用替代音效"
-    L.EchoCheckboxText = "回音效果"
-    L.PetSoundCheckboxText = "寵物音效替換"
-    L.PetSoundCat = "貓咪音效"
-    L.PetSoundBird = "鳥類音效"
-    L.VolumeSettings = "音量設定"
-    L.VolumeQuiet = "安靜"
-    L.VolumeNormal = "普通"
-    L.VolumeLoud = "響亮"
-    L.OnText = "|cFFFFDF00獵人槍聲音效已開啟|r"
-    L.OffText = "|cFFFFDF00獵人槍聲音效已關閉|r"
-    L.EchoOnText = "|cFFFFDF00回音效果已啟用|r"
-    L.EchoOffText = "|cFFFFDF00回音效果已停用|r"
-    L.PetSoundOnText = "|cFFFFDF00寵物音效替換已啟用|r"
-    L.PetSoundOffText = "|cFFFFDF00寵物音效替換已停用|r"
-    L.PetSoundChanged = "|cFFFFDF00寵物音效設定為 |cFF00FF00%s|r"
-    L.VolumeChanged = "|cFFFFDF00音量設定為 |cFF00FF00%s|r"
-    L.LoadedMessage = "|cFFFFDF00HunterGunSound 已載入！修改者：|cFFFF69B4-浪漫獵手-|r"
-    L.CommandMessage = "|cFFFFDF00輸入 |cFF003FFF/hgs|cFFFFDF00 開啟設定或 |cFF003FFF/ogs|cFFFFDF00 切換音效|r"
-    L.Credits = "修改者：|cFFFF69B4-浪漫獵手-|r"
-    
--- Russian (Русский)
-elseif locale == "ruRU" then
-    L.Title = "HunterGunSound Настройки - |cFFFF69B4Романтичный Охотник|r Издание"
-    L.CheckboxText = "Включить Альтернативные Звуки"
-    L.EchoCheckboxText = "Эффект Эха"
-    L.PetSoundCheckboxText = "Замена Звуков Питомца"
-    L.PetSoundCat = "Звук Кота"
-    L.PetSoundBird = "Звук Птицы"
-    L.VolumeSettings = "Настройки Громкости"
-    L.VolumeQuiet = "Тихо"
-    L.VolumeNormal = "Нормально"
-    L.VolumeLoud = "Громко"
-    L.OnText = "|cFFFFDF00Звуки Охотника ВКЛЮЧЕНЫ|r"
-    L.OffText = "|cFFFFDF00Звуки Охотника ОТКЛЮЧЕНЫ|r"
-    L.EchoOnText = "|cFFFFDF00Эффект эха включен|r"
-    L.EchoOffText = "|cFFFFDF00Эффект эха отключен|r"
-    L.PetSoundOnText = "|cFFFFDF00Замена звуков питомца включена|r"
-    L.PetSoundOffText = "|cFFFFDF00Замена звуков питомца отключена|r"
-    L.PetSoundChanged = "|cFFFFDF00Звук питомца установлен на |cFF00FF00%s|r"
-    L.VolumeChanged = "|cFFFFDF00Громкость установлена на |cFF00FF00%s|r"
-    L.LoadedMessage = "|cFFFFDF00HunterGunSound загружен! Изменено |cFFFF69B4-Романтичный Охотник-|r"
-    L.CommandMessage = "|cFFFFDF00Введите |cFF003FFF/hgs|cFFFFDF00 для настроек или |cFF003FFF/ogs|cFFFFDF00 для переключения звуков|r"
-    L.Credits = "Изменено |cFFFF69B4-Романтичный Охотник-|r"
-    
--- English (Default) - English, Portuguese, Italian, Japanese and other languages
+
+-- English (Default) - All other languages
 else
     L.Title = "HunterGunSound Settings - |cFFFF69B4Enhanced|r Edition"
     L.CheckboxText = "Enable Alternative Sounds"
