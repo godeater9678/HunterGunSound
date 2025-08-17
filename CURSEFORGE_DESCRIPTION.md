@@ -34,11 +34,6 @@
 /hgs - Opens the main settings interface
 ```
 
-### Alternative Commands
-```
-/ogs - Quick toggle on/off (legacy command)
-```
-
 ### Settings Menu Options
 - **Enable/Disable**: Toggle the entire addon
 - **Volume Control**: Adjust sound levels (Quiet/Normal/Loud)
