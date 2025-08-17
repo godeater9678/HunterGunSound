@@ -1,0 +1,12 @@
+## Interface: 90001
+## IconTexture: Interface\AddOns\HunterGunSound\handgun.tga
+## Title: HunterGunSound - |cFFFF69B4낭만냥꾼|r Edition
+## SavedVariablesPerCharacter: _HunterGunSounds
+## SavedVariables: HunterGunSoundSettings
+## Author: Curse369 (Modified by -낭만냥꾼-)
+## Version: 9.0.1.3r-RH-PET
+## Notes: |cFFFFDF00Enhanced with Volume Control & Pet-based Kill Command Sounds! Use |cFF003FFF/hgs|cFFFFDF00 for settings
+#
+# Type /ogs to switch on/off
+#
+HunterGunSound.lua
