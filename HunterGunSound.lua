@@ -136,9 +136,9 @@ local function GetKillCommandSoundFile()
 	
 	-- Return sound based on selected pet sound type
 	if _HunterGunSounds.petSoundType == "bird" then
-		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\bird-kill-command")
+		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\bird-kill-command")
 	else
-		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\cat-kill-command-loud")
+		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\cat-kill-command-loud")
 	end
 end
 
@@ -197,18 +197,18 @@ local function ChWeapon()
 	end
 
 	if Bow then
-		filen="Interface\\AddOns\\HunterGunSound\\spell_hu_bowrelease_0"
-		filer="Interface\\AddOns\\HunterGunSound\\spell_hu_bowpullback_0"
+		filen="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_bowrelease_0"
+		filer="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_bowpullback_0"
 		timedelay=0.7
 		timereset=0.8
 	elseif CBow then
-		filen="Interface\\AddOns\\HunterGunSound\\spell_hu_crossbowshoot_0"
-		filer="Interface\\AddOns\\HunterGunSound\\spell_hu_crossbowload_0"
+		filen="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_crossbowshoot_0"
+		filer="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_crossbowload_0"
 		timedelay=0.6
 		timereset=0.7
 	else
-		filen="Interface\\AddOns\\HunterGunSound\\spell_hu_blunderbuss_weaponfire_0"
-		filer="Interface\\AddOns\\HunterGunSound\\spell_hu_blunderbuss_reload_0"
+		filen="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_blunderbuss_weaponfire_0"
+		filer="Interface\\AddOns\\HunterGunSound\\sounds\\spell_hu_blunderbuss_reload_0"
 		timedelay=0.6
 		timereset=0.7
 	end
@@ -293,7 +293,7 @@ local function onEvent(self, event, ...)
 				PlaySoundFile(soundFile)
 			end
 		elseif arg3==185763 then
-			PlaySoundFile(GetSoundFileName("Interface\\AddOns\\HunterGunSound\\spell_ro_pistolshot_cast_0" .. math.random(3)))
+		PlaySoundFile(GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\spell_ro_pistolshot_cast_0" .. math.random(3)))
 		elseif 	ReloadS~=999999999 or ReloadS~=999999998 then
 			ReloadS=GetTime()
 		end
