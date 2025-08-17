@@ -138,7 +138,7 @@ local function GetKillCommandSoundFile()
 	if _HunterGunSounds.petSoundType == "bird" then
 		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\bird-kill-command")
 	else
-		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\cat-kill-command-loud")
+		return GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\cat-kill-command")
 	end
 end
 
@@ -259,7 +259,12 @@ local function onEvent(self, event, ...)
 			Bowname, CBowname, Gunname = "\229\188\147", "\229\188\169", "\230\167\141\230\162\176"
 		end
 	elseif (event == "PLAYER_LOGIN") then
-		print(L.LoadedMessage)
+		-- 동적으로 버전 정보를 포함한 로드 메시지 출력
+		if HunterGunSoundInfo then
+			print(HunterGunSoundInfo:GetLoadMessage(GetLocale()))
+		else
+			print(L.LoadedMessage)
+		end
 		print(L.CommandMessage)
 	elseif _HunterGunSounds.enabled == "on" and (event == "UNIT_SPELLCAST_SUCCEEDED") and (arg1 == "player") then
 		
@@ -574,20 +579,28 @@ for i = 1, 3 do
 	volumeRadios[i] = radio
 end
 
--- Version info
+-- Version info (동적으로 불러오기)
 local versionText = HunterGunSoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 versionText:SetPoint("BOTTOM", HunterGunSoundFrame, "BOTTOM", 0, 30)
-versionText:SetText("|cFFFFFFFFVersion 1.3 - Pet Sounds: 2025-08-16|r")
+-- 초기값 설정 (addon_info.lua가 로드되기 전 대비)
+versionText:SetText("|cFFFFFFFFVersion 1.3.2 - 2025-08-17|r")
 
--- Credits at bottom
+-- Credits at bottom (동적으로 불러오기)
 local creditsText = HunterGunSoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 creditsText:SetPoint("BOTTOM", HunterGunSoundFrame, "BOTTOM", 0, 10)
+-- 초기값 설정 (addon_info.lua가 로드되기 전 대비)
 creditsText:SetText(L.Credits)
 
 HunterGunSoundFrame:SetScript("OnShow", function(self)
     -- Ensure SavedVariables is initialized before using GUI
     if _HunterGunSounds == nil then
         InitializeSavedVariables()
+    end
+    
+    -- 동적으로 버전 정보와 크레딧 업데이트
+    if HunterGunSoundInfo then
+        versionText:SetText("|cFFFFFFFF" .. HunterGunSoundInfo:GetVersionString() .. "|r")
+        creditsText:SetText(HunterGunSoundInfo:GetCreditsString(GetLocale()))
     end
     
     if _HunterGunSounds.enabled == "on" then
