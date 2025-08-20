@@ -6,7 +6,7 @@ World of Warcraft Hunter addon that adds custom gun sound effects and kill strea
 
 - Custom gun sound effects for different weapons
 - Kill Command sound replacements
-- Kill streak announcements (Triple Kill, Quadra Kill, Penta Kill)
+- Enhanced audio feedback system
 - Bow and crossbow sound enhancements
 - Pet kill command audio cues
 
@@ -24,7 +24,7 @@ World of Warcraft Hunter addon that adds custom gun sound effects and kill strea
 - Crossbow load and shoot sounds
 - Pistol shot sounds
 - Kill Command cast sounds
-- Kill streak announcements (triple, quadra, penta kills)
+- Enhanced combat audio feedback
 - Animal kill command sounds (bird, cat, snow leopard)
 
 ## Files
@@ -33,10 +33,28 @@ World of Warcraft Hunter addon that adds custom gun sound effects and kill strea
 - `HunterGunSound.toc` - Addon metadata
 - Various `.ogg` sound files with different volume variants (min, normal, max)
 - `handgun.tga` - Addon icon
+- `SOUND_LICENSES.txt` - Sound assets licensing information
+
+## Sound Assets
+
+All sound files are sourced from **Mixkit.co** under the Mixkit Free License:
+- ✅ Royalty-free for commercial and non-commercial use
+- ✅ No attribution required
+- ✅ CurseForge compliant
+
+For detailed licensing information, see `SOUND_LICENSES.txt`.
 
 ## Compatibility
 
 This addon is designed for World of Warcraft Retail (current expansion).
+
+## Technical Notes
+
+This addon uses the same sound file referencing method as other established WoW sound addons (e.g., OldGunSound). The approach is:
+- References game sound IDs for replacement (standard practice)
+- Uses only licensed sound assets (Mixkit.co)
+- Includes AI-generated icon (no copyright issues)
+- Fully compliant with CurseForge content policies
 
 ## Author
 
