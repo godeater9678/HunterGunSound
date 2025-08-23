@@ -1,16 +1,16 @@
 -- SafeGuard: Initialize SavedVariables with default values if not present
 if _HunterGunSounds == nil then
-    _HunterGunSounds = { enabled = "on", volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat" }
+    _HunterGunSounds = { enabled = "on", volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat", machineGunEnabled = true, machineGunThreshold = 10 }
 end
 
 -- Centralized SavedVariables initialization function
 local function InitializeSavedVariables()
     if _HunterGunSounds == nil then
-        _HunterGunSounds = { enabled = "on", volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat" }
+        _HunterGunSounds = { enabled = "on", volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat", machineGunEnabled = true, machineGunThreshold = 10 }
     elseif type(_HunterGunSounds) == "string" then
         -- Migration logic for older versions
         local oldEnabled = _HunterGunSounds
-        _HunterGunSounds = { enabled = oldEnabled, volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat" }
+        _HunterGunSounds = { enabled = oldEnabled, volume = "normal", echoEnabled = false, petSoundEnabled = true, petSoundType = "cat", machineGunEnabled = true, machineGunThreshold = 10 }
     end
     
     -- Ensure all required fields exist
@@ -28,6 +28,12 @@ local function InitializeSavedVariables()
     end
     if _HunterGunSounds.petSoundType == nil then
         _HunterGunSounds.petSoundType = "cat"
+    end
+    if _HunterGunSounds.machineGunEnabled == nil then
+        _HunterGunSounds.machineGunEnabled = true
+    end
+    if _HunterGunSounds.machineGunThreshold == nil then
+        _HunterGunSounds.machineGunThreshold = 10
     end
 end
 
@@ -99,6 +105,11 @@ local timedelay, timereset = 0.6, 0.7
 local mini, maxi = 0, 18
 local eltimer=0
 local loginp=0
+
+-- 머신건 사운드를 위한 공격 추적 변수
+local attackTimes = {} -- 최근 공격 시간들을 저장하는 테이블
+local machineGunActive = false -- 머신건 모드 활성화 여부
+local lastMachineGunTime = 0 -- 마지막 머신건 사운드 재생 시간
 local TransmogLocationMixin={}
 local transmogLocation = CreateFromMixins(TransmogLocationMixin)
 transmogLocation.slotID=16
@@ -180,6 +191,97 @@ local function MuteUnmute()
 	end
 end
 
+-- 머신건 모드 감지 함수 (공격 시간만 추가, 모드는 체크하지 않음)
+local function AddAttackTime()
+    local currentTime = GetTime()
+    
+    -- 최근 공격 시간 추가
+    table.insert(attackTimes, currentTime)
+    
+    -- 1초 이전의 공격 시간들 제거
+    local i = 1
+    while i <= #attackTimes do
+        if currentTime - attackTimes[i] > 1.0 then
+            table.remove(attackTimes, i)
+        else
+            i = i + 1
+        end
+    end
+end
+
+-- 머신건 모드 상태 체크 (플레이어 총 공격 시에만 사용)
+local function CheckMachineGunMode()
+    local threshold = _HunterGunSounds.machineGunThreshold or 10
+    -- 1초 안에 설정된 횟수 이상 공격이면 머신건 모드 활성화
+    if #attackTimes >= threshold then
+        if not machineGunActive then
+            machineGunActive = true
+            print(string.format("|cFFFF4500[MACHINE GUN MODE! Threshold: %d]|r", threshold))
+        end
+        -- 머신건 모드 사용 후 초기화 (1회만 사용)
+        attackTimes = {}
+        return true
+    else
+        if machineGunActive then
+            machineGunActive = false
+            print("|cFF00FF00[NORMAL MODE]|r")
+        end
+        return false
+    end
+end
+
+-- 공격 사운드 재생 함수 (머신건 모드 고려)
+local function PlayAttackSound()
+    local currentTime = GetTime()
+    
+    -- 머신건 모드가 활성화되어 있을 때만 머신건 모드 체크
+    local isMachineGun = false
+    if _HunterGunSounds.machineGunEnabled then
+        isMachineGun = CheckMachineGunMode()
+    end
+    
+    if isMachineGun and _HunterGunSounds.machineGunEnabled then
+        -- 머신건 모드: 볼륨 설정에 따라 적절한 머신건 사운드 재생
+        -- 너무 빠른 연속 재생 방지를 위해 최소 0.1초 간격 설정
+        if currentTime - lastMachineGunTime > 0.1 then
+            PlaySoundFile(GetSoundFileName("Interface\\AddOns\\HunterGunSound\\sounds\\machinegun"), 0, 0.5)
+            lastMachineGunTime = currentTime
+        end
+    else
+        -- 일반 모드: 기존 설정에 따라 사운드 재생
+        local soundFile = GetSoundFileName(filen .. math.random(3))
+        PlaySoundFile(soundFile, 0, 0.5)
+        
+        -- Play echo effect if enabled
+        if _HunterGunSounds.echoEnabled then
+            C_Timer.After(0.5, function()
+                PlaySoundFile(soundFile, 0, 0.3)
+            end)
+        end
+    end
+end
+
+-- 간단한 데미지 추적 함수 (데미지 출력 없이 공격 시간만 추적)
+local function ProcessDamageEvent()
+    local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEventInfo()
+    
+    -- 내 캐릭터의 GUID 가져오기
+    local playerGUID = UnitGUID("player")
+    local petGUID = UnitGUID("pet")
+    
+    -- 데미지 이벤트만 처리
+    if subevent == "SWING_DAMAGE" or subevent == "SPELL_DAMAGE" or subevent == "RANGE_DAMAGE" then
+        -- 내 캐릭터나 펫의 공격인지 확인
+        if sourceGUID == playerGUID then
+            -- 플레이어 공격 시 머신건 모드 체크용 공격 시간 추가
+            AddAttackTime()
+        elseif petGUID and sourceGUID == petGUID then
+            -- 펫 공격 시에는 공격 시간만 추가하고 사운드는 재생하지 않음
+            AddAttackTime()
+        end
+    end
+end
+
 local function ChWeapon()
 	Bow, CBow, Gun = IsEquippedItemType(Bowname), IsEquippedItemType(CBowname), IsEquippedItemType(Gunname)
 
@@ -258,13 +360,11 @@ local function onEvent(self, event, ...)
 		elseif cloc == "zhTW" then
 			Bowname, CBowname, Gunname = "\229\188\147", "\229\188\169", "\230\167\141\230\162\176"
 		end
+	elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
+		-- 데미지 추적 처리
+		ProcessDamageEvent()
 	elseif (event == "PLAYER_LOGIN") then
-		-- 동적으로 버전 정보를 포함한 로드 메시지 출력
-		if HunterGunSoundInfo then
-			print(HunterGunSoundInfo:GetLoadMessage(GetLocale()))
-		else
-			print(L.LoadedMessage)
-		end
+		print(L.LoadedMessage)
 		print(L.CommandMessage)
 	elseif _HunterGunSounds.enabled == "on" and (event == "UNIT_SPELLCAST_SUCCEEDED") and (arg1 == "player") then
 		
@@ -273,15 +373,8 @@ local function onEvent(self, event, ...)
 				ReloadS=GetTime()
 			end
 			Triggert=1
-			local soundFile = GetSoundFileName(filen .. math.random(3))
-			PlaySoundFile(soundFile, 0, 0.5)
-			
-			-- Play echo effect if enabled
-			if _HunterGunSounds.echoEnabled then
-				C_Timer.After(0.5, function()
-					PlaySoundFile(soundFile, 0, 0.3)
-				end)
-			end
+			-- 머신건 모드 지원 사운드 재생
+			PlayAttackSound()
 		elseif arg3==58984 or arg3==5384 or arg3==257044 then
 			ReloadS=999999999
 		elseif arg3==19577 or arg3==259489 then
@@ -349,23 +442,6 @@ SlashCmdList["HUNTERGUNSOUNDS"] = function(msg)
 end
 SLASH_HUNTERGUNSOUNDS1 = "/hgs"
 
--- Toggle sound command
-SlashCmdList["HUNTERGUNSOUNDSTOGGLE"] = function(msg)
-    -- Ensure SavedVariables is initialized before using GUI
-    if _HunterGunSounds == nil then
-        InitializeSavedVariables()
-    end
-    
-    if _HunterGunSounds.enabled == "on" then
-        _HunterGunSounds.enabled = "off"
-        print(L.OffText)
-    else
-        _HunterGunSounds.enabled = "on"
-        print(L.OnText)
-    end
-    MuteUnmute()
-end
-SLASH_HUNTERGUNSOUNDSTOGGLE1 = "/ogs"
 HunterGunSound:RegisterEvent("ADDON_LOADED")
 HunterGunSound:RegisterEvent("PLAYER_ENTERING_WORLD")
 HunterGunSound:RegisterEvent("PLAYER_LOGIN")
@@ -375,6 +451,7 @@ HunterGunSound:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 HunterGunSound:RegisterEvent("TRANSMOGRIFY_SUCCESS")
 HunterGunSound:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 HunterGunSound:RegisterEvent("UNIT_SPELLCAST_START")
+HunterGunSound:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 HunterGunSound:SetScript("OnEvent", onEvent)
 HunterGunSound:SetScript("OnUpdate", onUp)
 
@@ -388,6 +465,8 @@ if locale == "koKR" then
     L.CheckboxText = "대체 사운드 활성화"
     L.EchoCheckboxText = "추가 효과음 (에코)"
     L.PetSoundCheckboxText = "펫 소리 대체"
+    L.MachineGunCheckboxText = "머신건 효과음"
+    L.MachineGunThresholdSettings = "머신건 발동 조건"
     L.PetSoundCat = "고양이 소리"
     L.PetSoundBird = "조류 소리"
     L.VolumeSettings = "볼륨 설정"
@@ -400,10 +479,13 @@ if locale == "koKR" then
     L.EchoOffText = "|cFFFFDF00추가 효과음이 비활성화되었습니다.|r"
     L.PetSoundOnText = "|cFFFFDF00펫 소리 대체가 활성화되었습니다.|r"
     L.PetSoundOffText = "|cFFFFDF00펫 소리 대체가 비활성화되었습니다.|r"
+    L.MachineGunOnText = "|cFFFFDF00머신건 모드가 활성화되었습니다.|r"
+    L.MachineGunOffText = "|cFFFFDF00머신건 모드가 비활성화되었습니다.|r"
+    L.MachineGunThresholdChanged = "|cFFFFDF00머신건 발동 조건이 |cFF00FF00%d회|r|cFFFFDF00로 설정되었습니다.|r"
     L.PetSoundChanged = "|cFFFFDF00펫 사운드가 |cFF00FF00%s|r|cFFFFDF00로 설정되었습니다.|r"
     L.VolumeChanged = "|cFFFFDF00볼륨이 |cFF00FF00%s|r|cFFFFDF00로 설정되었습니다.|r"
     L.LoadedMessage = "|cFFFFDF00HunterGunSound 로드됨! 제작: |cFFFF69B4-낭만냥꾼-|r"
-    L.CommandMessage = "|cFFFFDF00|cFF003FFF/hgs|cFFFFDF00 명령어로 설정 창을 열거나 |cFF003FFF/ogs|cFFFFDF00 명령어로 사운드를 켜고 끌 수 있습니다.|r"
+    L.CommandMessage = "|cFFFFDF00|cFF003FFF/hgs|cFFFFDF00 명령어로 설정 창을 열 수 있습니다.|r"
     L.Credits = "개선: |cFFFF69B4-낭만냥꾼-|r"
 
 -- English (Default) - All other languages
@@ -412,6 +494,8 @@ else
     L.CheckboxText = "Enable Alternative Sounds"
     L.EchoCheckboxText = "Echo Effect"
     L.PetSoundCheckboxText = "Pet Sound Replacement"
+    L.MachineGunCheckboxText = "Machine Gun Effects"
+    L.MachineGunThresholdSettings = "Machine Gun Threshold"
     L.PetSoundCat = "Cat Sound"
     L.PetSoundBird = "Bird Sound"
     L.VolumeSettings = "Volume Settings"
@@ -424,19 +508,22 @@ else
     L.EchoOffText = "|cFFFFDF00Echo effect disabled|r"
     L.PetSoundOnText = "|cFFFFDF00Pet sound replacement enabled|r"
     L.PetSoundOffText = "|cFFFFDF00Pet sound replacement disabled|r"
+    L.MachineGunOnText = "|cFFFFDF00Machine gun mode enabled|r"
+    L.MachineGunOffText = "|cFFFFDF00Machine gun mode disabled|r"
+    L.MachineGunThresholdChanged = "|cFFFFDF00Machine gun threshold set to |cFF00FF00%d attacks|r"
     L.PetSoundChanged = "|cFFFFDF00Pet sound set to |cFF00FF00%s|r"
     L.VolumeChanged = "|cFFFFDF00Volume set to |cFF00FF00%s|r"
     L.LoadedMessage = "|cFFFFDF00HunterGunSound loaded! Enhanced by |cFFFF69B4godeater9678|r"
-    L.CommandMessage = "|cFFFFDF00Type |cFF003FFF/hgs|cFFFFDF00 to open settings or |cFF003FFF/ogs|cFFFFDF00 to toggle sounds|r"
+    L.CommandMessage = "|cFFFFDF00Type |cFF003FFF/hgs|cFFFFDF00 to open settings|r"
     L.Credits = "Enhanced by |cFFFF69B4godeater9678|r"
 end
 
 -- Create the GUI
 local HunterGunSoundFrame = CreateFrame("Frame", "HunterGunSoundFrame", UIParent, "BasicFrameTemplate")
-HunterGunSoundFrame:SetSize(300, 380)
+HunterGunSoundFrame:SetSize(340, 520)
 HunterGunSoundFrame:SetPoint("CENTER")
 HunterGunSoundFrame.title = HunterGunSoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-HunterGunSoundFrame.title:SetPoint("TOP", 0, -5)
+HunterGunSoundFrame.title:SetPoint("TOP", 0, -8)
 HunterGunSoundFrame.title:SetText(L.Title)
 
 HunterGunSoundFrame:SetMovable(true)
@@ -447,7 +534,7 @@ HunterGunSoundFrame:SetScript("OnDragStop", HunterGunSoundFrame.StopMovingOrSizi
 
 -- Sound On/Off Checkbox
 local soundCheckbox = CreateFrame("CheckButton", "HunterGunSoundSoundCheckbox", HunterGunSoundFrame, "UICheckButtonTemplate")
-soundCheckbox:SetPoint("TOPLEFT", 20, -40)
+soundCheckbox:SetPoint("TOPLEFT", 20, -35)
 
 local soundCheckboxText = soundCheckbox:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 soundCheckboxText:SetPoint("LEFT", soundCheckbox, "RIGHT", 5, 0)
@@ -466,7 +553,7 @@ end)
 
 -- Echo Effect Checkbox
 local echoCheckbox = CreateFrame("CheckButton", "HunterGunSoundEchoCheckbox", HunterGunSoundFrame, "UICheckButtonTemplate")
-echoCheckbox:SetPoint("TOPLEFT", soundCheckbox, "BOTTOMLEFT", 0, -5)
+echoCheckbox:SetPoint("TOPLEFT", soundCheckbox, "BOTTOMLEFT", 0, -8)
 
 local echoCheckboxText = echoCheckbox:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 echoCheckboxText:SetPoint("LEFT", echoCheckbox, "RIGHT", 5, 0)
@@ -482,9 +569,68 @@ echoCheckbox:SetScript("OnClick", function(self)
     end
 end)
 
+-- Machine Gun Effects Checkbox
+local machineGunCheckbox = CreateFrame("CheckButton", "HunterGunSoundMachineGunCheckbox", HunterGunSoundFrame, "UICheckButtonTemplate")
+machineGunCheckbox:SetPoint("TOPLEFT", echoCheckbox, "BOTTOMLEFT", 0, -8)
+
+local machineGunCheckboxText = machineGunCheckbox:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+machineGunCheckboxText:SetPoint("LEFT", machineGunCheckbox, "RIGHT", 5, 0)
+machineGunCheckboxText:SetText(L.MachineGunCheckboxText)
+
+machineGunCheckbox:SetScript("OnClick", function(self)
+    if self:GetChecked() then
+        _HunterGunSounds.machineGunEnabled = true
+        print(L.MachineGunOnText)
+    else
+        _HunterGunSounds.machineGunEnabled = false
+        print(L.MachineGunOffText)
+    end
+end)
+
+-- Machine Gun Threshold Settings Section
+local machineGunThresholdTitle = HunterGunSoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+machineGunThresholdTitle:SetPoint("TOPLEFT", machineGunCheckbox, "BOTTOMLEFT", 0, -12)
+machineGunThresholdTitle:SetText(L.MachineGunThresholdSettings)
+
+-- Machine Gun Threshold Radio Buttons
+local machineGunThresholdRadios = {}
+local machineGunThresholdValues = {5, 10, 15}
+
+local function UpdateMachineGunThresholdRadios()
+	-- Ensure SavedVariables is initialized before use
+	if _HunterGunSounds == nil then
+		InitializeSavedVariables()
+	end
+	
+	for i, radio in ipairs(machineGunThresholdRadios) do
+		radio:SetChecked(machineGunThresholdValues[i] == _HunterGunSounds.machineGunThreshold)
+	end
+end
+
+for i = 1, 3 do
+	local radio = CreateFrame("CheckButton", "MachineGunThresholdRadio" .. i, HunterGunSoundFrame, "UIRadioButtonTemplate")
+	if i == 1 then
+		radio:SetPoint("TOPLEFT", machineGunThresholdTitle, "BOTTOMLEFT", 0, -8)
+	else
+		radio:SetPoint("TOPLEFT", machineGunThresholdRadios[i-1], "BOTTOMLEFT", 0, -6)
+	end
+	
+	local radioText = radio:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	radioText:SetPoint("LEFT", radio, "RIGHT", 5, 0)
+	radioText:SetText(string.format("%d Times", machineGunThresholdValues[i]))
+	
+	radio:SetScript("OnClick", function(self)
+		_HunterGunSounds.machineGunThreshold = machineGunThresholdValues[i]
+		print(string.format(L.MachineGunThresholdChanged, machineGunThresholdValues[i]))
+		UpdateMachineGunThresholdRadios()
+	end)
+	
+	machineGunThresholdRadios[i] = radio
+end
+
 -- Pet Sound Replacement Checkbox
 local petSoundCheckbox = CreateFrame("CheckButton", "HunterGunSoundPetSoundCheckbox", HunterGunSoundFrame, "UICheckButtonTemplate")
-petSoundCheckbox:SetPoint("TOPLEFT", echoCheckbox, "BOTTOMLEFT", 0, -5)
+petSoundCheckbox:SetPoint("TOPLEFT", machineGunThresholdRadios[3], "BOTTOMLEFT", 0, -15)
 
 local petSoundCheckboxText = petSoundCheckbox:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 petSoundCheckboxText:SetPoint("LEFT", petSoundCheckbox, "RIGHT", 5, 0)
@@ -530,8 +676,8 @@ for i = 1, 2 do
 	
 	radio:SetScript("OnClick", function(self)
 		_HunterGunSounds.petSoundType = petSoundValues[i]
-		UpdatePetSoundRadios()
 		print(string.format(L.PetSoundChanged, petSoundLabels[i]))
+		UpdatePetSoundRadios()
 	end)
 	
 	petSoundRadios[i] = radio
@@ -572,8 +718,8 @@ for i = 1, 3 do
 	
 	radio:SetScript("OnClick", function(self)
 		_HunterGunSounds.volume = volumeValues[i]
-		UpdateVolumeRadios()
 		print(string.format(L.VolumeChanged, volumeLabels[i]))
+		UpdateVolumeRadios()
 	end)
 	
 	volumeRadios[i] = radio
@@ -611,7 +757,9 @@ HunterGunSoundFrame:SetScript("OnShow", function(self)
     
     echoCheckbox:SetChecked(_HunterGunSounds.echoEnabled)
     petSoundCheckbox:SetChecked(_HunterGunSounds.petSoundEnabled)
+    machineGunCheckbox:SetChecked(_HunterGunSounds.machineGunEnabled)
     
+    UpdateMachineGunThresholdRadios()
     UpdatePetSoundRadios()
     UpdateVolumeRadios()
 end)
