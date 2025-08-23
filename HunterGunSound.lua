@@ -216,7 +216,7 @@ local function CheckMachineGunMode()
     if #attackTimes >= threshold then
         if not machineGunActive then
             machineGunActive = true
-            print(string.format("|cFFFF4500[MACHINE GUN MODE! Threshold: %d]|r", threshold))
+            -- print(string.format("|cFFFF4500[MACHINE GUN MODE! Threshold: %d]|r", threshold))
         end
         -- 머신건 모드 사용 후 초기화 (1회만 사용)
         attackTimes = {}
@@ -224,7 +224,7 @@ local function CheckMachineGunMode()
     else
         if machineGunActive then
             machineGunActive = false
-            print("|cFF00FF00[NORMAL MODE]|r")
+            -- print("|cFF00FF00[NORMAL MODE]|r")
         end
         return false
     end
