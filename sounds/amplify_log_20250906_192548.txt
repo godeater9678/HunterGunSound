@@ -1,0 +1,57 @@
+[2025-09-06 19:25:48] === Hunter Addon Sound Volume Amplification Started ===
+[2025-09-06 19:25:48] Target path: D:\battlenet\World of Warcraft\_retail_\Interface\AddOns\HunterGunSound\sounds
+[2025-09-06 19:25:48] Volume multiplier: 2x
+[2025-09-06 19:25:48] Temporary directory created: D:\battlenet\World of Warcraft\_retail_\Interface\AddOns\HunterGunSound\sounds\temp
+[2025-09-06 19:25:48] Files to process: 117
+[2025-09-06 19:25:48] [1/117] Processing: bird-kill-command.ogg (0.9%)
+[2025-09-06 19:25:49] Success: bird-kill-command.ogg
+[2025-09-06 19:25:49] [2/117] Processing: bird-kill-command_max.ogg (1.7%)
+[2025-09-06 19:25:50] Success: bird-kill-command_max.ogg
+[2025-09-06 19:25:50] [3/117] Processing: bird-kill-command_min.ogg (2.6%)
+[2025-09-06 19:25:51] Success: bird-kill-command_min.ogg
+[2025-09-06 19:25:51] [4/117] Processing: cat-kill-command.ogg (3.4%)
+[2025-09-06 19:25:52] Success: cat-kill-command.ogg
+[2025-09-06 19:25:52] [5/117] Processing: cat-kill-command_max.ogg (4.3%)
+[2025-09-06 19:25:53] Success: cat-kill-command_max.ogg
+[2025-09-06 19:25:53] [6/117] Processing: cat-kill-command_min.ogg (5.1%)
+[2025-09-06 19:25:54] Success: cat-kill-command_min.ogg
+[2025-09-06 19:25:54] [7/117] Processing: machinegun.ogg (6%)
+[2025-09-06 19:25:55] Success: machinegun.ogg
+[2025-09-06 19:25:55] [8/117] Processing: machinegun_max.ogg (6.8%)
+[2025-09-06 19:25:56] Success: machinegun_max.ogg
+[2025-09-06 19:25:56] [9/117] Processing: machinegun_min.ogg (7.7%)
+[2025-09-06 19:25:57] Success: machinegun_min.ogg
+[2025-09-06 19:25:57] [10/117] Processing: mad-snow-leopard.ogg (8.5%)
+[2025-09-06 19:25:58] Success: mad-snow-leopard.ogg
+[2025-09-06 19:25:58] [11/117] Processing: mad-snow-leopard_max.ogg (9.4%)
+[2025-09-06 19:25:59] Success: mad-snow-leopard_max.ogg
+[2025-09-06 19:25:59] [12/117] Processing: mad-snow-leopard_min.ogg (10.3%)
+[2025-09-06 19:26:00] Success: mad-snow-leopard_min.ogg
+[2025-09-06 19:26:00] [13/117] Processing: spell_hu_blunderbuss_reload_01.ogg (11.1%)
+[2025-09-06 19:26:01] Success: spell_hu_blunderbuss_reload_01.ogg
+[2025-09-06 19:26:01] [14/117] Processing: spell_hu_blunderbuss_reload_01_max.ogg (12%)
+[2025-09-06 19:26:02] Success: spell_hu_blunderbuss_reload_01_max.ogg
+[2025-09-06 19:26:02] [15/117] Processing: spell_hu_blunderbuss_reload_01_min.ogg (12.8%)
+[2025-09-06 19:26:03] Success: spell_hu_blunderbuss_reload_01_min.ogg
+[2025-09-06 19:26:03] [16/117] Processing: spell_hu_blunderbuss_reload_02.ogg (13.7%)
+[2025-09-06 19:26:04] Success: spell_hu_blunderbuss_reload_02.ogg
+[2025-09-06 19:26:04] [17/117] Processing: spell_hu_blunderbuss_reload_02_max.ogg (14.5%)
+[2025-09-06 19:26:05] Success: spell_hu_blunderbuss_reload_02_max.ogg
+[2025-09-06 19:26:05] [18/117] Processing: spell_hu_blunderbuss_reload_02_min.ogg (15.4%)
+[2025-09-06 19:26:06] Success: spell_hu_blunderbuss_reload_02_min.ogg
+[2025-09-06 19:26:06] [19/117] Processing: spell_hu_blunderbuss_reload_03.ogg (16.2%)
+[2025-09-06 19:26:08] Success: spell_hu_blunderbuss_reload_03.ogg
+[2025-09-06 19:26:08] [20/117] Processing: spell_hu_blunderbuss_reload_03_max.ogg (17.1%)
+[2025-09-06 19:26:09] Success: spell_hu_blunderbuss_reload_03_max.ogg
+[2025-09-06 19:26:09] [21/117] Processing: spell_hu_blunderbuss_reload_03_min.ogg (17.9%)
+[2025-09-06 19:26:10] Success: spell_hu_blunderbuss_reload_03_min.ogg
+[2025-09-06 19:26:10] [22/117] Processing: spell_hu_blunderbuss_reload_04.ogg (18.8%)
+[2025-09-06 19:26:11] Success: spell_hu_blunderbuss_reload_04.ogg
+[2025-09-06 19:26:11] [23/117] Processing: spell_hu_blunderbuss_reload_04_max.ogg (19.7%)
+[2025-09-06 19:26:12] Success: spell_hu_blunderbuss_reload_04_max.ogg
+[2025-09-06 19:26:12] [24/117] Processing: spell_hu_blunderbuss_reload_04_min.ogg (20.5%)
+[2025-09-06 19:26:13] Success: spell_hu_blunderbuss_reload_04_min.ogg
+[2025-09-06 19:26:13] [25/117] Processing: spell_hu_blunderbuss_reload_05.ogg (21.4%)
+[2025-09-06 19:26:14] Success: spell_hu_blunderbuss_reload_05.ogg
+[2025-09-06 19:26:14] [26/117] Processing: spell_hu_blunderbuss_reload_05_max.ogg (22.2%)
+[2025-09-06 19:26:14] Script terminated
