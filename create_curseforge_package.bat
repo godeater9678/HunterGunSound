@@ -1,96 +1,60 @@
 @echo off
-setlocal enabledelayedexpansion
-
 echo =======================================
 echo CurseForge Package Creator
 echo =======================================
 
-:: ?? ???? ??
-set SOURCE_DIR=%~dp0
-set TEMP_DIR=%SOURCE_DIR%temp_curseforge
-set ZIP_NAME=HunterGunSound.zip
+:: ?? ?? ?? ??
+set TEMP_FOLDER=temp_curseforge_clean
+set ADDON_FOLDER=HunterGunSound
+set ZIP_FILE=HunterGunSound.zip
 
-:: ?? ????? ???? ??
-if exist "%TEMP_DIR%" (
-    echo Cleaning up existing temp directory...
-    rmdir /s /q "%TEMP_DIR%"
-)
+:: ?? ??? ??
+if exist "%TEMP_FOLDER%" rmdir /s /q "%TEMP_FOLDER%"
+if exist "%ZIP_FILE%" del /q "%ZIP_FILE%"
 
-:: ?? ???? ??
-echo Creating temporary directory...
-mkdir "%TEMP_DIR%"
+:: ?? ?? ? ??? ?? ??
+mkdir "%TEMP_FOLDER%"
+mkdir "%TEMP_FOLDER%\%ADDON_FOLDER%"
 
-:: ?? ??? ?? ??? ?? ????? ??
-echo Copying files to temporary directory...
-xcopy "%SOURCE_DIR%*" "%TEMP_DIR%\" /E /I /H /Y
+echo Copying essential addon files only...
 
-:: ???? ??? ??
-if exist "%TEMP_DIR%\.idea" (
-    echo Removing .idea folder...
-    rmdir /s /q "%TEMP_DIR%\.idea"
-)
+:: ??? ?? ???? ?? (HunterGunSound ?? ??)
+if exist "HunterGunSound.lua" copy "HunterGunSound.lua" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "HunterGunSound.toc" copy "HunterGunSound.toc" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "addon_info.lua" copy "addon_info.lua" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "README.md" copy "README.md" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "CURSEFORGE_DESCRIPTION.md" copy "CURSEFORGE_DESCRIPTION.md" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "SOUND_LICENSES.txt" copy "SOUND_LICENSES.txt" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
+if exist "handgun.tga" copy "handgun.tga" "%TEMP_FOLDER%\%ADDON_FOLDER%\" >nul
 
-if exist "%TEMP_DIR%\.git" (
-    echo Removing .git folder...
-    rmdir /s /q "%TEMP_DIR%\.git"
-)
-
-if exist "%TEMP_DIR%\temp_curseforge" (
-    echo Removing temp folder...
-    rmdir /s /q "%TEMP_DIR%\temp_curseforge"
-)
-
-:: ???? ??? ??
-if exist "%TEMP_DIR%\.gitignore" (
-    echo Removing .gitignore file...
-    del /q "%TEMP_DIR%\.gitignore"
-)
-
-if exist "%TEMP_DIR%\create_curseforge_package.bat" (
-    echo Removing batch files...
-    del /q "%TEMP_DIR%\create_curseforge_package.bat"
-)
-
-if exist "%TEMP_DIR%\create_curseforge_package.ps1" (
-    del /q "%TEMP_DIR%\create_curseforge_package.ps1"
-)
-
-if exist "%TEMP_DIR%\*.zip" (
-    echo Removing existing zip files...
-    del /q "%TEMP_DIR%\*.zip"
-)
-
-:: ?? zip ??? ??? ??
-if exist "%SOURCE_DIR%%ZIP_NAME%" (
-    echo Removing existing zip file...
-    del /q "%SOURCE_DIR%%ZIP_NAME%"
-)
-
-:: PowerShell? ???? ZIP ?? ??
-echo Creating ZIP file...
-powershell -Command "Compress-Archive -Path '%TEMP_DIR%\*' -DestinationPath '%SOURCE_DIR%%ZIP_NAME%' -Force"
-
-:: ?? ???? ??
-echo Cleaning up temporary directory...
-rmdir /s /q "%TEMP_DIR%"
-
-echo =======================================
-echo Package created successfully!
-echo File: %ZIP_NAME%
-echo Location: %SOURCE_DIR%
-echo =======================================
-
-:: ??? ZIP ?? ?? ??
-if exist "%SOURCE_DIR%%ZIP_NAME%" (
-    for %%F in ("%SOURCE_DIR%%ZIP_NAME%") do (
-        echo File size: %%~zF bytes
-        echo Created: %%~tF
+:: sounds ?? ?? (??? ??? ????)
+if exist "sounds" (
+    mkdir "%TEMP_FOLDER%\%ADDON_FOLDER%\sounds" >nul 2>&1
+    :: backup ??? ?? ?? ???? ??
+    for %%f in ("sounds\*.ogg") do (
+        echo %%f | find "backup" >nul || copy "%%f" "%TEMP_FOLDER%\%ADDON_FOLDER%\sounds\" >nul
     )
-    echo.
-    echo Ready for CurseForge upload!
-) else (
-    echo ERROR: ZIP file was not created!
+    for %%f in ("sounds\*.OGG") do (
+        echo %%f | find "backup" >nul || copy "%%f" "%TEMP_FOLDER%\%ADDON_FOLDER%\sounds\" >nul
+    )
+    :: _Silence.OGG ??? ??
+    if exist "sounds\_Silence.OGG" copy "sounds\_Silence.OGG" "%TEMP_FOLDER%\%ADDON_FOLDER%\sounds\" >nul
 )
+
+echo Creating clean ZIP file with HunterGunSound folder structure...
+
+:: PowerShell? ZIP ?? (HunterGunSound ?? ??)
+powershell -Command "Compress-Archive -Path '%TEMP_FOLDER%\*' -DestinationPath '%ZIP_FILE%' -Force"
+
+:: ?? ?? ??
+rmdir /s /q "%TEMP_FOLDER%"
+
+echo =======================================
+echo CurseForge package created successfully!
+echo File: %ZIP_FILE%
+echo Structure: HunterGunSound\ (folder containing all addon files)
+echo =======================================
+echo Ready for CurseForge upload!
 
 echo.
 echo Press any key to exit...
